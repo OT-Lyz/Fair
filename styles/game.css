@@ -1,3 +1,4 @@
+/* 基础样式 */
 body {
   font-family: 'Segoe UI', sans-serif;
   line-height: 1.6;
@@ -7,46 +8,34 @@ body {
   background-color: #f5f5f5;
 }
 
-.game-container {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
+/* 对话容器 */
 .dialogue-container {
   min-height: 300px;
   max-height: 500px;
   overflow-y: auto;
-  margin-bottom: 20px;
   padding: 15px;
   border: 1px solid #ddd;
+  background: white;
   border-radius: 5px;
 }
 
-.npc {
-  color: #d35400;
-  margin-bottom: 10px;
-}
+/* 消息样式 */
+.npc { color: #d35400; margin-bottom: 10px; }
+.player { color: #2980b9; text-align: right; margin: 10px 0; }
+.ending { color: #dc3545; font-weight: bold; }
 
-.player {
-  color: #2980b9;
-  text-align: right;
-  margin: 10px 0;
-}
-
+/* 输入区域 */
 .input-area {
   display: flex;
   gap: 10px;
+  margin-top: 15px;
 }
-
 #player-input {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
-
 #submit-btn {
   padding: 10px 20px;
   background: #2ecc71;
@@ -55,7 +44,13 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
-
 #submit-btn:disabled {
   background: #95a5a6;
+}
+
+/* 调试信息 */
+.debug-info {
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #7f8c8d;
 }
