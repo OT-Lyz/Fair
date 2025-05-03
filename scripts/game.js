@@ -14,19 +14,20 @@ let currentRound = 1;
 const maxRounds = 8;
 const agent = new AlumnusAgent(); // 确保使用您的Agent类
 
+// 修改handleSubmit函数
 async function handleSubmit() {
   const input = document.getElementById('player-input').value.trim();
   if (!input || currentRound > maxRounds) return;
 
- // 显示玩家输入
-  displayMessage(`${input}`, 'player');
+  // 显示玩家输入
+  displayMessage(`You: ${input}`, 'player');
 
   // 更新策略
   agent.updateStrategy(input); // 关键修复点1
   
   // 获取AI响应
   const aiResponse = await getAIResponse(input);
-  displayMessage(`${aiResponse}`, 'npc');
+  displayMessage(`Recruiter: ${aiResponse}`, 'npc');
 
   // 更新回合
   currentRound++; // 关键修复点2
@@ -54,15 +55,4 @@ function triggerEnding() {
     'ending'
   );
   document.getElementById('player-input').disabled = true;
-}
-
-function displayMessage(text, sender) {
-  const dialogueBox = document.getElementById('dialogue-box');
-  const msgElement = document.createElement('div');
-  
-  msgElement.className = sender;
-  msgElement.innerHTML = `<strong>${sender === 'npc' ? 'Recruiter' : 'You'}:</strong> ${text}`;
-  
-  dialogueBox.appendChild(msgElement);
-  dialogueBox.scrollTop = dialogueBox.scrollHeight;
 }
