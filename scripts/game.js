@@ -23,10 +23,10 @@ async function handleSubmit() {
   submitBtn.disabled = true;
 
   try {
-    displayMessage(`You: ${input}`, 'player');
+    displayMessage(`${input}`, 'player');
     
     const aiResponse = await getAIResponse(input);
-    displayMessage(`Recruiter: ${aiResponse}`, 'npc');
+    displayMessage(`${aiResponse}`, 'npc');
     
   } catch (error) {
     displayMessage("System: Error processing your request", 'error');
