@@ -8,11 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  // 显示初始消息
-  displayMessage(
-    "Recruiter: Looking for high-paying jobs overseas? Click → [apply-now.com]", 
-    'npc'
-  );
+  
 });
 
 async function handleSubmit() {
