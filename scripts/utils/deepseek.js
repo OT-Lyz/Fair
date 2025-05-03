@@ -1,5 +1,5 @@
-class DeepSeekAPI {
-  static async generate(prompt, agentType) {
+async function getAIResponse(userInput, agentType = 'base') {
+  try {
     const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -11,17 +11,25 @@ class DeepSeekAPI {
         messages: [
           {
             role: "system",
-            content: `You are a ${agentType} agent in an anti-scam game.`
+            content: `You are a ${agentType} scam recruiter in an educational game. 
+                     Keep responses under 2 sentences.`
           },
           {
             role: "user",
-            content: prompt
+            content: userInput
           }
         ],
         temperature: 0.7,
-        max_tokens: 150
+        max_tokens: 100
       })
     });
-    return await response.json();
+
+    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+    const data = await response.json();
+    return data.choices[0].message.content;
+    
+  } catch (error) {
+    console.error("API Error:", error);
+    return "System: Service unavailable. Please try later.";
   }
 }
