@@ -1,5 +1,8 @@
-<div id="dialogue-container">
-  <div id="npc-text"></div>
-  <input type="text" id="player-input">
-  <button onclick="handlePlayerSubmit()">Submit</button>
+<div id="game-ui">
+  <div id="chat-history"></div>
+  <input type="text" id="player-input" placeholder="Type your response...">
+  <button id="submit-btn">Send</button>
+  <div id="strategy-hint" class="tooltip">
+    Current scam strategy: <span id="current-strategy">initial</span>
+  </div>
 </div>
