@@ -20,14 +20,14 @@ async function handleSubmit() {
   if (!input || currentRound > maxRounds) return;
 
   // 显示玩家输入
-  displayMessage('${input}', 'player');
+  displayMessage(`You: ${input}`, 'player');
 
   // 更新策略
   agent.updateStrategy(input); // 关键修复点1
   
   // 获取AI响应
   const aiResponse = await getAIResponse(input);
-  displayMessage('${aiResponse}', 'npc');
+  displayMessage(`Recruiter: ${aiResponse}`, 'npc');
 
   // 更新回合
   currentRound++; // 关键修复点2
