@@ -16,14 +16,18 @@
       <input type="text" id="player-input" placeholder="Type your message...">
       <button id="submit-btn">Send</button>
     </div>
+
+    <div class="debug-info">
+      <p>Strategy: <span id="strategy-display">initial</span></p>
+      <p>Round: <span id="round-counter">1</span>/8</p>
+    </div>
   </div>
 
-  <!-- 加载所有JS文件 -->
+  <!-- 加载顺序非常重要 -->
   <script src="scripts/config.js"></script>
-  <script src="scripts/utils/deepseek.js"></script>
-  <script src="scripts/utils/formatter.js"></script>
   <script src="scripts/agents/BaseAgent.js"></script>
   <script src="scripts/agents/AlumnusAgent.js"></script>
+  <script src="scripts/utils/deepseek.js"></script>
   <script src="scripts/game.js"></script>
 </body>
 </html>
