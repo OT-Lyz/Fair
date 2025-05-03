@@ -8,31 +8,20 @@
   <div class="game-container">
     <h1>⚠️ Anti-Scam Simulation ⚠️</h1>
     
-    <!-- 对话历史展示区 -->
     <div id="dialogue-box" class="dialogue-container">
-      <div class="npc-message">
-        <strong>Recruiter:</strong> 
-        <span id="initial-message">Looking for high-paying overseas jobs? Click here → 
-          <a href="#" class="fake-link">career-opportunity.com</a>
-        </span>
-      </div>
+      <!-- 对话将动态插入这里 -->
     </div>
 
-    <!-- 玩家输入区 -->
     <div class="input-area">
-      <input type="text" id="player-input" placeholder="Type your response...">
-      <button id="submit-btn">Submit</button>
-    </div>
-
-    <!-- 调试信息（可选） -->
-    <div class="debug-info">
-      <p>Current strategy: <span id="strategy-display">initial_contact</span></p>
-      <p>Round: <span id="round-counter">1</span>/8</p>
+      <input type="text" id="player-input" placeholder="Type your message...">
+      <button id="submit-btn">Send</button>
     </div>
   </div>
 
+  <!-- 加载所有JS文件 -->
   <script src="scripts/config.js"></script>
   <script src="scripts/utils/deepseek.js"></script>
+  <script src="scripts/utils/formatter.js"></script>
   <script src="scripts/agents/BaseAgent.js"></script>
   <script src="scripts/agents/AlumnusAgent.js"></script>
   <script src="scripts/game.js"></script>
