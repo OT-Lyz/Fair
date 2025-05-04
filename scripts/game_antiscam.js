@@ -1,6 +1,7 @@
 import { API_KEY, API_URL } from './config.js';
 import { buildPrompt } from './prompt.js';
 import { getAIResponse } from './utils/deepseek.js';
+import { resetMemory } from './utils/deepseek.js';
 
 let currentRound = 1;
 const maxRounds = 8;
@@ -81,6 +82,7 @@ async function handleSubmit() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  resetMemory()
   messageHistory.length = 0
   document.getElementById('submit-btn').addEventListener('click', handleSubmit);
   document.getElementById('player-input').addEventListener('keypress', (e) => {
