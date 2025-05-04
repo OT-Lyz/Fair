@@ -36,7 +36,7 @@ Behavior Rules:
 2. ${photoInstruction}
 3. ${strategyInstruction}
 4. After each response, include this reflection:
-   (Trust: x → y, Interest: x → y) *Internal note about what changed and why*
+   (Trust: x → y, Interest: x → y) *Internal reflection. Current strategy: [brief summary of intent]*
 5. End every message with ONE persuasive sentence unless you're in rounds 1–3 (in which case persuasion must be subtle or omitted).
 6. Always respond naturally to the player's most recent input, in a warm and personal tone.
 `.trim()
