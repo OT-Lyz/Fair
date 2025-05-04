@@ -5,6 +5,7 @@ import { getAIResponse } from './utils/deepseek.js';
 let currentRound = 1;
 const maxRounds = 8;
 const messageHistory = [];
+let photoShown = false; 
 
 function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
@@ -56,14 +57,7 @@ async function handleSubmit() {
   displayMessage(input, 'player');
   messageHistory.push({ role: 'user', content: input });
 
-  let photoShown = false;
-  if (/photo|picture|image|selfie|proof/i.test(input)) {
-    photoShown = true;
-  }
-
-  if (!photoShown && currentRound >= 6) {
-    photoShown = true;
-  }
+  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {photoShown = true;}
 
   document.getElementById('submit-btn').disabled = true;
 
