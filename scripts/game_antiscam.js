@@ -1,4 +1,3 @@
-// scripts/game_antiscam.js
 import { API_KEY, API_URL } from './config.js';
 import { buildPrompt } from './prompt.js';
 import { getAIResponse } from './utils/deepseek.js';
@@ -40,7 +39,12 @@ async function handleSubmit() {
   agent.updateStrategy(input);
 
   document.getElementById('submit-btn').disabled = true;
-  const response = await getAIResponse(messageHistory, agent.trustScore, agent.currentStrategy);
+
+  // Build the prompt with history, trust score, and strategy
+  const prompt = buildPrompt(messageHistory, agent.trustScore, agent.currentStrategy);
+
+  // Send the prompt to DeepSeek API
+  const response = await getAIResponse(prompt);
   messageHistory.push({ role: 'assistant', content: response });
 
   displayMessage(response, 'assistant');
