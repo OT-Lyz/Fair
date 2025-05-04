@@ -1,60 +1,52 @@
 import { API_KEY, API_URL } from '../config.js';
 
-// 使用全局 Map 存储每个玩家的 messageHistory
-const sessionMap = new Map();
+// 存储每个玩家的对话历史
+const playerMessageMap = new Map();
 
-// 初始 system prompt，可根据实际需要替换
-const systemPrompt = {
-  role: 'system',
-  content: '你是假扮成一位校友的招聘者，请模仿正常校友口吻，引导玩家产生信任感。'
-};
-
-// 初始化某个玩家的 session（仅在新玩家时调用一次）
-export function initPlayerSession(playerId) {
-  sessionMap.set(playerId, [systemPrompt]);
-}
-
-// 获取指定玩家的 messages 列表
-function getPlayerMessages(playerId) {
-  if (!sessionMap.has(playerId)) initPlayerSession(playerId);
-  return sessionMap.get(playerId);
-}
-
-// 发送对话请求给 LLM
-export async function getAIResponse(prompt) {
-  const { playerId, userInput } = prompt;
-
-  const messageHistory = getPlayerMessages(playerId);
-  messageHistory.push({ role: 'user', content: userInput });
-
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: messageHistory,
-      temperature: 0.7
-    })
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API Error: ${text}`);
+export async function getAIResponse(prompt, playerId = 'default') {
+  // 获取或初始化该玩家的对话历史
+  if (!playerMessageMap.has(playerId)) {
+    playerMessageMap.set(playerId, []);
   }
+  const playerMessages = playerMessageMap.get(playerId);
+  
+  // 计算token大致数量（简单估算：1个汉字≈2token，1个英文单词≈1.33token）
+  const estimateTokens = (text) => Math.ceil(text.length * 0.6);
+  const promptTokens = estimateTokens(JSON.stringify(prompt));
+  
+  // 设置max_tokens，确保不超过模型限制（假设使用128k模型）
+  const max_tokens = Math.max(512, 4096 - promptTokens); // 至少保留512token用于生成
 
-  const result = await response.json();
-  const reply = result.choices[0].message.content;
+  try {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: prompt,
+        temperature: 0.7,
+        max_tokens: max_tokens
+      })
+    });
 
-  messageHistory.push({ role: 'assistant', content: reply });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`API Error: ${errorData.error?.message || response.statusText}`);
+    }
 
-  // 控制长度，保留 system + 最近 20 条
-  const MAX_LEN = 21;
-  if (messageHistory.length > MAX_LEN) {
-    messageHistory.splice(1, messageHistory.length - MAX_LEN);
+    const result = await response.json();
+    const aiResponse = result.choices[0].message.content;
+    
+    // 更新玩家对话历史
+    playerMessages.push(...prompt.filter(m => m.role !== 'system'));
+    playerMessages.push({ role: 'assistant', content: aiResponse });
+    
+    return aiResponse;
+  } catch (error) {
+    console.error('API请求失败:', error);
+    throw error;
   }
-
-  return reply;
 }
