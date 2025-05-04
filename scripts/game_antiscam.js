@@ -4,8 +4,15 @@ import { getAIResponse } from './utils/deepseek.js';
 
 let currentRound = 1;
 const maxRounds = 8;
-let photoShown = false; 
-// 注意：移除了全局的messageHistory，改为在deepseek.js中管理每个玩家的对话历史
+const messageHistory = []; // 恢复全局messageHistory
+let photoShown = false;
+
+// 新增重置函数
+function resetGameState() {
+  currentRound = 1;
+  messageHistory.length = 0; // 清空历史
+  photoShown = false;
+}
 
 function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
@@ -46,7 +53,6 @@ function extractCurrentStrategy(text) {
 }
 
 function extractFormalResponse(text) {
-  // 去除括号和星号内部的内容，只保留对话部分
   return text.split(/[\(\*]/)[0].trim();
 }
 
@@ -55,6 +61,7 @@ async function handleSubmit() {
   if (!input || currentRound > maxRounds) return;
 
   displayMessage(input, 'player');
+  messageHistory.push({ role: 'user', content: input });
 
   if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {
     photoShown = true;
@@ -62,18 +69,14 @@ async function handleSubmit() {
 
   document.getElementById('submit-btn').disabled = true;
 
-  // 获取当前玩家ID（这里使用简单实现，你可以根据需要修改）
-  // 在实际应用中，你应该有一个获取真实玩家ID的方法
-  const playerId = 'player1'; // 替换为你的玩家ID获取逻辑
-  
-  // 构建prompt时只传入当前消息，历史记录由deepseek.js管理
-  const prompt = buildPrompt([{ role: 'user', content: input }], currentRound, photoShown);
-  const responseText = await getAIResponse(prompt, playerId);
+  const prompt = buildPrompt(messageHistory, currentRound, photoShown);
+  const responseText = await getAIResponse(prompt);
+  messageHistory.push({ role: 'assistant', content: responseText });
 
   const trustScore = extractTrustScore(responseText);
   const interestScore = extractInterestScore(responseText);
   const currentStrategy = extractCurrentStrategy(responseText);
-  const formalText = extractFormalResponse(responseText);
+  const formalText = extractFormalResponse(responseText || "");
 
   displayMessage(formalText, 'assistant');
   updateUI(trustScore, interestScore, currentStrategy, currentRound, photoShown);
@@ -86,19 +89,17 @@ async function handleSubmit() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 游戏开始时重置状态
+  resetGameState();
+
   document.getElementById('submit-btn').addEventListener('click', handleSubmit);
   document.getElementById('player-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  // 初始化 UI
+  // 初始化UI
   updateUI(5, 5, 'initial', currentRound, false);
   const intro = "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.";
   displayMessage(intro, 'assistant');
-  
-  // 初始化对话历史（现在由deepseek.js管理）
-  // 注意：这里不再直接操作messageHistory
-  const playerId = 'player1'; // 与上面相同的playerId
-  const initialPrompt = buildPrompt([{ role: 'assistant', content: intro }], currentRound, false);
-  getAIResponse(initialPrompt, playerId); // 初始化AI的首次发言
+  messageHistory.push({ role: 'assistant', content: intro });
 });
