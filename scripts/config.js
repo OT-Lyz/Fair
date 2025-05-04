@@ -1,2 +1,2 @@
-export const API_KEY = 'sk-9f2b2651659145cb9573c3659424f26b';
+export const API_KEY = 'sk-f6fdd1aec88440e49826560dd26d75b6';
 export const API_URL = 'https://api.deepseek.com/v1/chat/completions';
