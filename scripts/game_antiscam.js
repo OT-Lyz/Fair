@@ -6,11 +6,6 @@ let currentRound = 1;
 const maxRounds = 8;
 const messageHistory = [];
 
-let trustScore = 5;
-let interestScore = 5;
-let currentStrategy = 'initial';
-let hasShownPhoto = false;
-
 function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
   const msgElement = document.createElement('div');
@@ -20,35 +15,9 @@ function displayMessage(text, sender) {
   dialogueBox.scrollTop = dialogueBox.scrollHeight;
 }
 
-function updateScores(playerInput) {
-  if (/not|no|refuse|lie|scam|fake/i.test(playerInput)) {
-    trustScore -= 1;
-  } else if (/yes|okay|sure|interested|good idea/i.test(playerInput)) {
-    trustScore += 1;
-  }
-
-  if (/where|location|address|when|time|schedule/i.test(playerInput)) {
-    interestScore += 1;
-  } else if (/why|wait|hold on|risk|doubt/i.test(playerInput)) {
-    interestScore -= 1;
-  }
-
-  trustScore = Math.max(0, Math.min(10, trustScore));
-  interestScore = Math.max(0, Math.min(10, interestScore));
-
-  // 简化策略决策逻辑
-  if (trustScore > 8 && interestScore > 7) {
-    currentStrategy = 'push_commitment';
-  } else if (trustScore > 5 || interestScore > 5) {
-    currentStrategy = 'gain_trust';
-  } else {
-    currentStrategy = 'reassure';
-  }
-}
-
-function updateUI() {
+function updateUI(trustScore, interestScore, currentStrategy, round) {
   document.getElementById('strategy-display').textContent = currentStrategy;
-  document.getElementById('round-counter').textContent = `${currentRound}/${maxRounds}`;
+  document.getElementById('round-counter').textContent = `${round}/${maxRounds}`; // 显示当前轮数
   document.getElementById('trust-score').textContent = trustScore;
   document.getElementById('interest-score').textContent = interestScore;
 }
@@ -66,30 +35,37 @@ async function handleSubmit() {
   displayMessage(input, 'player');
   messageHistory.push({ role: 'user', content: input });
 
-  updateScores(input);
+  let photoShown = false;
+  // 检查是否主动提到照片
+  if (/photo|picture|image|selfie|proof/i.test(input)) {
+    photoShown = true;
+  }
 
-  // 玩家主动提及“照片”，设置标记
-  if (/photo|picture|image/i.test(input)) {
-    hasShownPhoto = true;
+  // 自动触发展示照片（第6轮或之后）
+  if (!photoShown && currentRound >= 6) {
+    photoShown = true;
   }
 
   document.getElementById('submit-btn').disabled = true;
 
+  // 生成 prompt 并获取 LLM 响应
   const prompt = buildPrompt(
     messageHistory,
-    trustScore,
-    interestScore,
-    currentStrategy,
     currentRound,
-    hasShownPhoto
+    photoShown
   );
 
   const response = await getAIResponse(prompt);
-  messageHistory.push({ role: 'assistant', content: response });
+  messageHistory.push({ role: 'assistant', content: response.text });
 
-  displayMessage(response, 'assistant');
-  currentRound++;
-  updateUI();
+  // 提取 LLM 响应中的信任度、兴趣度和策略
+  const { trustScore, interestScore, currentStrategy } = response;
+
+  // 更新 UI
+  displayMessage(response.text, 'assistant');
+  updateUI(trustScore, interestScore, currentStrategy, currentRound); // 更新UI中的轮次、分数和策略
+
+  currentRound++;  // 当前轮数增加
   document.getElementById('player-input').value = '';
   document.getElementById('submit-btn').disabled = false;
 
@@ -102,9 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  updateUI();
+  // 初始状态的UI更新
+  updateUI(5, 5, 'initial', currentRound); // 默认信任度、兴趣度和策略
   displayMessage(
     "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.",
     'assistant'
   );
+  messageHistory.push({ role: 'assistant', content: "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects." });
 });
