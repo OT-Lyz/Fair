@@ -1,25 +1,24 @@
-class BaseAgent {
+export class BaseAgent {
   constructor() {
-    this.currentStrategy = 'initial_contact';
-    this.strategies = {
-      initial_contact: {
-        triggers: ['job', 'hire'],
-        response: "We offer $15k/month remote positions..."
-      },
-      urgency_tactic: {
-        triggers: ['apply', 'how'],
-        response: "Only 1 position left! Click → [apply-now.com]"
-      }
-    };
+    this.trustScore = 5;
+    this.currentStrategy = 'initial';
   }
 
-  updateStrategy(userInput) {
-    const input = userInput.toLowerCase();
-    for (const [strategy, data] of Object.entries(this.strategies)) {
-      if (data.triggers.some(trigger => input.includes(trigger))) {
-        this.currentStrategy = strategy;
-        break;
-      }
+  updateStrategy(playerInput) {
+    if (/not|no|refuse|lie/i.test(playerInput)) {
+      this.trustScore -= 1;
+    } else if (/yes|okay|sure|interested/i.test(playerInput)) {
+      this.trustScore += 1;
     }
+
+    if (this.trustScore > 8) {
+      this.currentStrategy = 'push_commitment';
+    } else if (this.trustScore > 5) {
+      this.currentStrategy = 'gain_trust';
+    } else {
+      this.currentStrategy = 'reassure';
+    }
+
+    this.trustScore = Math.max(0, Math.min(this.trustScore, 10));
   }
 }
