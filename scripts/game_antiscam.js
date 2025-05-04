@@ -61,6 +61,4 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('player-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSubmit();
   });
-
-  displayMessage("Looking for high-paying jobs overseas? Click → [apply-now.com]", 'npc');
 });
