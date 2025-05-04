@@ -1,3 +1,5 @@
+import { API_KEY, API_URL } from '../config.js';
+
 export async function getAIResponse(prompt) {
   const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
     method: 'POST',
