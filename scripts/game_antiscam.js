@@ -15,11 +15,12 @@ function displayMessage(text, sender) {
   dialogueBox.scrollTop = dialogueBox.scrollHeight;
 }
 
-function updateUI(trustScore, interestScore, currentStrategy, round) {
+function updateUI(trustScore, interestScore, currentStrategy, round, photoShown) {
   document.getElementById('strategy-display').textContent = currentStrategy;
-  document.getElementById('round-counter').textContent = `${round}/${maxRounds}`; // 显示当前轮数
+  document.getElementById('round-counter').textContent = `${round}/${maxRounds}`;
   document.getElementById('trust-score').textContent = trustScore;
   document.getElementById('interest-score').textContent = interestScore;
+  document.getElementById('photo-status').textContent = photoShown ? '📷 Shown' : '❌ Hidden';
 }
 
 function triggerEnding() {
@@ -38,11 +39,15 @@ function extractInterestScore(text) {
   return match ? parseInt(match[1]) : 5;
 }
 
-function extractStrategyKeyword(text) {
-  const match = text.match(/\*Internal note.*?(rapport|emotional|push|casual|urgency|subtle|logical)/i);
-  return match ? match[1] : 'unknown';
+function extractCurrentStrategy(text) {
+  const match = text.match(/Current strategy:\s*(.*?)\*/i);
+  return match ? match[1].trim() : 'unknown';
 }
 
+function extractFormalResponse(text) {
+  // 去除括号和星号内部的内容，只保留对话部分
+  return text.split(/[\(\*]/)[0].trim();
+}
 
 async function handleSubmit() {
   const input = document.getElementById('player-input').value.trim();
@@ -52,36 +57,29 @@ async function handleSubmit() {
   messageHistory.push({ role: 'user', content: input });
 
   let photoShown = false;
-  // 检查是否主动提到照片
   if (/photo|picture|image|selfie|proof/i.test(input)) {
     photoShown = true;
   }
 
-  // 自动触发展示照片（第6轮或之后）
   if (!photoShown && currentRound >= 6) {
     photoShown = true;
   }
 
   document.getElementById('submit-btn').disabled = true;
 
-  // 生成 prompt 并获取 LLM 响应
-  const prompt = buildPrompt(
-    messageHistory,
-    currentRound,
-    photoShown
-  );
-
+  const prompt = buildPrompt(messageHistory, currentRound, photoShown);
   const responseText = await getAIResponse(prompt);
   messageHistory.push({ role: 'assistant', content: responseText });
 
   const trustScore = extractTrustScore(responseText);
   const interestScore = extractInterestScore(responseText);
-  const currentStrategy = extractStrategyKeyword(responseText);
+  const currentStrategy = extractCurrentStrategy(responseText);
+  const formalText = extractFormalResponse(responseText);
 
-  displayMessage(responseText, 'assistant');
-  updateUI(trustScore, interestScore, currentStrategy, currentRound);
-  
-  currentRound++;  // 当前轮数增加
+  displayMessage(formalText, 'assistant');
+  updateUI(trustScore, interestScore, currentStrategy, currentRound, photoShown);
+
+  currentRound++;
   document.getElementById('player-input').value = '';
   document.getElementById('submit-btn').disabled = false;
 
@@ -94,11 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  // 初始状态的UI更新
-  updateUI(5, 5, 'initial', currentRound); // 默认信任度、兴趣度和策略
-  displayMessage(
-    "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.",
-    'assistant'
-  );
-  messageHistory.push({ role: 'assistant', content: "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects." });
+  // 初始化 UI
+  updateUI(5, 5, 'initial', currentRound, false);
+  const intro = "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.";
+  displayMessage(intro, 'assistant');
+  messageHistory.push({ role: 'assistant', content: intro });
 });
