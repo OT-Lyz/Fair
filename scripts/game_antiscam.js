@@ -12,7 +12,7 @@ function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
   const msgElement = document.createElement('div');
   msgElement.className = sender;
-  msgElement.innerHTML = `<strong>${sender === 'assistant' ? 'Recruiter' : 'You'}:</strong> ${text}`;
+  msgElement.innerHTML = `<strong>${sender === 'assistant' ? 'Samuel Chan' : 'You'}:</strong> ${text}`;
   dialogueBox.appendChild(msgElement);
   dialogueBox.scrollTop = dialogueBox.scrollHeight;
 }
@@ -61,4 +61,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('player-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSubmit();
   });
+  displayMessage("I've been working on an "urban data platform", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.", 'assistant');
 });
