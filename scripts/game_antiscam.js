@@ -1,11 +1,11 @@
 import { API_KEY, API_URL } from './config.js';
 import { buildPrompt } from './prompt.js';
-import { getAIResponse } from './utils/deepseek.js';
+import { getAIResponse, initPlayerSession } from './utils/deepseek.js'; // ✅ 修改1：新增 initPlayerSession 引入
 
 let currentRound = 1;
 const maxRounds = 8;
-const messageHistory = [];
-let photoShown = false; 
+let photoShown = false;
+const playerId = 'player1'; // ✅ 你可以改成唯一ID（如 login 时生成的 UUID）
 
 function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
@@ -46,7 +46,6 @@ function extractCurrentStrategy(text) {
 }
 
 function extractFormalResponse(text) {
-  // 去除括号和星号内部的内容，只保留对话部分
   return text.split(/[\(\*]/)[0].trim();
 }
 
@@ -55,15 +54,20 @@ async function handleSubmit() {
   if (!input || currentRound > maxRounds) return;
 
   displayMessage(input, 'player');
-  messageHistory.push({ role: 'user', content: input });
 
-  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {photoShown = true;}
+  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {
+    photoShown = true;
+  }
 
   document.getElementById('submit-btn').disabled = true;
 
-  const prompt = buildPrompt(messageHistory, currentRound, photoShown);
+  // ✅ 修改2：构建 prompt 对象，包含 playerId 和用户输入
+  const prompt = {
+    playerId: playerId,
+    userInput: input
+  };
+
   const responseText = await getAIResponse(prompt);
-  messageHistory.push({ role: 'assistant', content: responseText });
 
   const trustScore = extractTrustScore(responseText);
   const interestScore = extractInterestScore(responseText);
@@ -86,9 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  // 初始化 UI
+  // ✅ 初始化玩家上下文
+  initPlayerSession(playerId);
+
   updateUI(5, 5, 'initial', currentRound, false);
   const intro = "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.";
   displayMessage(intro, 'assistant');
-  messageHistory.push({ role: 'assistant', content: intro });
+
+  // 可选：也加 intro 到该玩家上下文中
+  // （不是必须，如果你希望从 system 开始就好，就不加）
 });
