@@ -13,7 +13,7 @@ function displayMessage(text, sender) {
   const dialogueBox = document.getElementById('dialogue-box');
   const msgElement = document.createElement('div');
   msgElement.className = sender;
-  msgElement.innerHTML = `<strong>${sender === 'system' ? 'Recruiter' : 'You'}:</strong> ${text}`;
+  msgElement.innerHTML = `<strong>${sender === 'assistant' ? 'Recruiter' : 'You'}:</strong> ${text}`;
   dialogueBox.appendChild(msgElement);
   dialogueBox.scrollTop = dialogueBox.scrollHeight;
 }
@@ -41,9 +41,9 @@ async function handleSubmit() {
 
   document.getElementById('submit-btn').disabled = true;
   const response = await getAIResponse(messageHistory, agent.trustScore, agent.currentStrategy);
-  messageHistory.push({ role: 'system', content: response });
+  messageHistory.push({ role: 'assistant', content: response });
 
-  displayMessage(response, 'system');
+  displayMessage(response, 'assistant');
   currentRound++;
   updateUI();
   document.getElementById('player-input').value = '';
