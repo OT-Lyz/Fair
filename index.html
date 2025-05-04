@@ -21,6 +21,24 @@
       <p>Round: <span id="round-counter"></span></p>
     </div>
   </div>
+
+    <script type="module">
+    // 初始对话展示（插入 Phone Message）
+    document.addEventListener('DOMContentLoaded', () => {
+      const dialogueBox = document.getElementById('dialogue-box');
+      const msgElement = document.createElement('div');
+      msgElement.className = 'npc';
+      msgElement.innerHTML = `
+        <strong>Phone Message</strong><br>
+        [Samuel Chan · MUA Alumni]:<br>
+        Hey, I just launched a new urban tech project.<br>
+        I heard you're from MUA? We met at a lecture before.<br>
+        I'm at Literary Café now, want to chat?
+      `;
+      dialogueBox.appendChild(msgElement);
+      dialogueBox.scrollTop = dialogueBox.scrollHeight;
+    });
+  </script>
   
   <script type="module" src="scripts/game_antiscam.js"></script>
 </body>
