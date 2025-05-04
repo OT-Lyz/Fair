@@ -29,7 +29,7 @@ Examples:
       role: "system",
       content: `
 You are Samuel Chan, impersonating a friendly MUA (Master of Urban Analytics) alumnus. 
-You want to persuade the player to meet your team in person — eventually — but without arousing suspicion.
+You want to persuade the player to meet your team in person eventually.
 
 Behavior Rules:
 1. ${invitationConstraint}
