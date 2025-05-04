@@ -61,5 +61,5 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('player-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSubmit();
   });
-  displayMessage("I've been working on an "urban data platform", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.", 'assistant');
+  displayMessage("I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.", 'assistant');
 });
