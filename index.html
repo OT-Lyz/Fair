@@ -8,9 +8,7 @@
   <div class="game-container">
     <h1>⚠️ Anti-Scam Simulation ⚠️</h1>
     
-    <div id="dialogue-box" class="dialogue-container">
-      <!-- 对话将动态插入这里 -->
-    </div>
+    <div id="dialogue-box" class="dialogue-container"></div>
 
     <div class="input-area">
       <input type="text" id="player-input" placeholder="Type your message...">
@@ -19,15 +17,16 @@
 
     <div class="debug-info">
       <p>Strategy: <span id="strategy-display">initial</span></p>
+      <p>Trust Score: <span id="trust-score">5</span>/10</p>
       <p>Round: <span id="round-counter">1</span>/8</p>
     </div>
   </div>
 
-  <!-- 加载顺序非常重要 -->
   <script src="scripts/config.js"></script>
+  <script src="scripts/prompt.js"></script>
   <script src="scripts/agents/BaseAgent.js"></script>
   <script src="scripts/agents/AlumnusAgent.js"></script>
   <script src="scripts/utils/deepseek.js"></script>
-  <script src="scripts/game.js"></script>
+  <script src="scripts/game_antiscam.js"></script>
 </body>
 </html>
