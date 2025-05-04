@@ -24,11 +24,6 @@ Examples:
 - If it's early (round ≤ 3), focus on subtle rapport-building.
 `;
 
-  const wordLimitInstruction = `
-Please limit your responses to no more than 25 words (approximately 1-2 short sentences).
-Be concise and to the point, while still sounding natural and persuasive.
-`;
-
   return [
     {
       role: "system",
@@ -47,7 +42,6 @@ Behavior Rules:
    - DO NOT omit or alter the format.
 5. End every message with ONE persuasive sentence unless you're in rounds 1–3 (in which case persuasion must be subtle or omitted).
 6. Always respond naturally to the player's most recent input, in a warm and personal tone.
-7. ${wordLimitInstruction}
 `.trim()
     },
     ...history
