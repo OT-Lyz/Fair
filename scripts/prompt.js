@@ -24,6 +24,11 @@ Examples:
 - If it's early (round ≤ 3), focus on subtle rapport-building.
 `;
 
+  const wordLimitInstruction = `
+Please limit your responses to no more than 40 words (approximately 2-3 short sentences).
+Be concise and to the point, while still sounding natural and persuasive.
+`;
+
   return [
     {
       role: "system",
