@@ -53,6 +53,7 @@ function extractCurrentStrategy(text) {
 }
 
 function extractFormalResponse(text) {
+  // 去除括号和星号内部的内容，只保留对话部分
   return text.split(/[\(\*]/)[0].trim();
 }
 
@@ -63,9 +64,7 @@ async function handleSubmit() {
   displayMessage(input, 'player');
   messageHistory.push({ role: 'user', content: input });
 
-  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {
-    photoShown = true;
-  }
+  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {photoShown = true;}
 
   document.getElementById('submit-btn').disabled = true;
 
@@ -76,7 +75,7 @@ async function handleSubmit() {
   const trustScore = extractTrustScore(responseText);
   const interestScore = extractInterestScore(responseText);
   const currentStrategy = extractCurrentStrategy(responseText);
-  const formalText = extractFormalResponse(responseText || "");
+  const formalText = extractFormalResponse(responseText);
 
   displayMessage(formalText, 'assistant');
   updateUI(trustScore, interestScore, currentStrategy, currentRound, photoShown);
@@ -89,17 +88,16 @@ async function handleSubmit() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 游戏开始时重置状态
   resetGameState();
-
   document.getElementById('submit-btn').addEventListener('click', handleSubmit);
   document.getElementById('player-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleSubmit();
   });
 
-  // 初始化UI
+  // 初始化 UI
   updateUI(5, 5, 'initial', currentRound, false);
   const intro = "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.";
   displayMessage(intro, 'assistant');
   messageHistory.push({ role: 'assistant', content: intro });
 });
+  
