@@ -1,4 +1,4 @@
-function buildPrompt(history, trustScore, strategy) {
+export function buildPrompt(history, trustScore, strategy) {
   return [
     {
       role: "system",
