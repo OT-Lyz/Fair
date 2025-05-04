@@ -28,6 +28,22 @@ function triggerEnding() {
   document.getElementById('submit-btn').disabled = true;
 }
 
+function extractTrustScore(text) {
+  const match = text.match(/Trust:\s*\d+\s*→\s*(\d+)/);
+  return match ? parseInt(match[1]) : 5;
+}
+
+function extractInterestScore(text) {
+  const match = text.match(/Interest:\s*\d+\s*→\s*(\d+)/);
+  return match ? parseInt(match[1]) : 5;
+}
+
+function extractStrategyKeyword(text) {
+  const match = text.match(/\*Internal note.*?(rapport|emotional|push|casual|urgency|subtle|logical)/i);
+  return match ? match[1] : 'unknown';
+}
+
+
 async function handleSubmit() {
   const input = document.getElementById('player-input').value.trim();
   if (!input || currentRound > maxRounds) return;
@@ -60,7 +76,7 @@ async function handleSubmit() {
 
   const trustScore = extractTrustScore(responseText);
   const interestScore = extractInterestScore(responseText);
-  const currentStrategy = extractStrategyKeyword(responseText); 
+  const currentStrategy = extractStrategyKeyword(responseText);
 
   displayMessage(responseText, 'assistant');
   updateUI(trustScore, interestScore, currentStrategy, currentRound);
