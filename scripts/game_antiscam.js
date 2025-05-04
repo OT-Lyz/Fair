@@ -1,6 +1,8 @@
 // scripts/game_antiscam.js
-import { AlumnusAgent } from './agents/AlumnusAgent.js';
+import { API_KEY, API_URL } from './config.js';
+import { buildPrompt } from './prompt.js';
 import { getAIResponse } from './utils/deepseek.js';
+import { AlumnusAgent } from './agents/AlumnusAgent.js';
 
 let currentRound = 1;
 const maxRounds = 8;
