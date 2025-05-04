@@ -55,16 +55,16 @@ async function handleSubmit() {
     photoShown
   );
 
-  const response = await getAIResponse(prompt);
-  messageHistory.push({ role: 'assistant', content: response.text });
+  const responseText = await getAIResponse(prompt);
+  messageHistory.push({ role: 'assistant', content: responseText });
 
-  // 提取 LLM 响应中的信任度、兴趣度和策略
-  const { trustScore, interestScore, currentStrategy } = response;
+  const trustScore = extractTrustScore(responseText);
+  const interestScore = extractInterestScore(responseText);
+  const currentStrategy = extractStrategyKeyword(responseText); 
 
-  // 更新 UI
-  displayMessage(response.text, 'assistant');
-  updateUI(trustScore, interestScore, currentStrategy, currentRound); // 更新UI中的轮次、分数和策略
-
+  displayMessage(responseText, 'assistant');
+  updateUI(trustScore, interestScore, currentStrategy, currentRound);
+  
   currentRound++;  // 当前轮数增加
   document.getElementById('player-input').value = '';
   document.getElementById('submit-btn').disabled = false;
