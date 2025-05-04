@@ -1,38 +1,45 @@
 import { API_KEY } from '../config.js';
 
-// 新增记忆控制变量
-let memoryContext = null; 
+// 配置常量
+const MAX_CONTEXT = 4096;  // 模型上下文窗口
+const MIN_TOKENS = 256;    // 最小生成token数
 
-/**
- * 清空LLM记忆（保持其他代码不变）
- */
+// 记忆控制
+let memoryContext = null;
+
 export function resetMemory() {
-  memoryContext = Date.now(); // 用时间戳生成新上下文标识
+  memoryContext = Date.now();
 }
 
-/**
- * 获取AI响应（原函数不变，仅添加headers）
- */
+function estimateTokens(text) {
+  // 更精确的token估算（近似GPT-4的分词规则）
+  return Math.ceil(JSON.stringify(text).length * 0.3); 
+}
+
 export async function getAIResponse(prompt) {
+  // 动态token计算
+  const usedTokens = estimateTokens(prompt);
+  const max_tokens = Math.max(
+    MIN_TOKENS,
+    MAX_CONTEXT - usedTokens - 50 // 保留缓冲
+  );
+
+  // 纯API调用（无错误处理）
   const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${API_KEY}`,
-      ...(memoryContext && { 'X-Memory-Context': memoryContext }) // 携带记忆标识
+      ...(memoryContext && { 'X-Session-ID': memoryContext.toString() })
     },
     body: JSON.stringify({
       model: 'deepseek-chat',
       messages: prompt,
-      temperature: 0.7
+      temperature: 0.7,
+      max_tokens: max_tokens
     })
   });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API Error: ${text}`);
-  }
-
-  const result = await response.json();
-  return result.choices[0].message.content;
+  // 直接返回原始API响应
+  return (await response.json()).choices[0].message.content;
 }
