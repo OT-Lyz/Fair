@@ -8,7 +8,7 @@ export function buildPrompt(history, trustScore, interestScore, round, photoShow
 
   // 首三轮限制：不能明显诱导
   const invitationConstraint = (round <= 3)
-    ? "Do NOT invite the player to meet or mention face-to-face interaction yet. Just build rapport and talk about shared interests (like MUA, urban data, jobs)."
+    ? "Do NOT invite the player to meet or mention face-to-face interaction yet. "
     : "";
 
   // 策略提示：LLM自己判断当前策略
