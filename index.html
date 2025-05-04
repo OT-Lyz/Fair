@@ -8,27 +8,38 @@
   <div class="game-container">
     <h1>⚠️ Anti-Scam Simulation ⚠️</h1>
     
+    <!-- 显示对话框 -->
     <div id="dialogue-box" class="dialogue-container"></div>
 
+    <!-- 玩家输入区 -->
     <div class="input-area">
       <input type="text" id="player-input" placeholder="Type your message...">
       <button id="submit-btn">Send</button>
     </div>
 
+    <!-- 显示策略、信任度和轮次 -->
     <div class="debug-info">
       <p>Strategy: <span id="strategy-display">initial</span></p>
       <p>Trust Score: <span id="trust-score">5</span>/10</p>
+      <p>Interest Score: <span id="interest-score">5</span>/10</p>
       <p>Round: <span id="round-counter"></span></p>
+    </div>
+    
+    <!-- 如果有照片，显示照片 -->
+    <div id="photo-area" style="display:none;">
+      <p><strong>Photo:</strong></p>
+      <img id="photo" src="" alt="Photo will be shown here" width="300">
     </div>
   </div>
 
-    <script type="module">
+  <!-- 添加游戏逻辑脚本 -->
+  <script type="module">
     // 初始对话展示（插入 Phone Message）
     document.addEventListener('DOMContentLoaded', () => {
       const dialogueBox = document.getElementById('dialogue-box');
       const msgElement = document.createElement('div');
       msgElement.className = 'npc';
-      msgElement.innerHTML = `
+      msgElement.innerHTML = ` 
         <strong>Phone Message</strong><br>
         [Samuel Chan · MUA Alumni]:<br>
         Hey, I just launched a new urban tech project.<br>
@@ -39,7 +50,7 @@
       dialogueBox.scrollTop = dialogueBox.scrollHeight;
     });
   </script>
-  
+
   <script type="module" src="scripts/game_antiscam.js"></script>
 </body>
 </html>
