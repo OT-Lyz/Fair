@@ -4,7 +4,7 @@ import { getAIResponse } from './utils/deepseek.js';
 import { resetMemory } from './utils/deepseek.js';
 
 let currentRound = 1;
-const maxRounds = 8;
+const maxRounds = 5;
 const messageHistory = [];
 let photoShown = false; 
 
@@ -26,7 +26,7 @@ function updateUI(trustScore, interestScore, currentStrategy, round, photoShown)
 }
 
 function triggerEnding() {
-  displayMessage("⚠️ You arrived at the remote compound. All communications are cut off...", 'ending');
+  displayMessage("Payment successful… (Recruiter disappears, phone unreachable)", 'ending');
   document.getElementById('player-input').disabled = true;
   document.getElementById('submit-btn').disabled = true;
 }
@@ -58,7 +58,7 @@ async function handleSubmit() {
   displayMessage(input, 'player');
   messageHistory.push({ role: 'user', content: input });
 
-  if (!photoShown && (/photo|picture|image|selfie|proof/i.test(input) || currentRound >= 6)) {photoShown = true;}
+  if (!photoShown && (/photo|picture|image|contract|proof/i.test(input) || currentRound >= 4)) {photoShown = true;}
 
   document.getElementById('submit-btn').disabled = true;
 
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 初始化 UI
   updateUI(5, 5, 'initial', currentRound, false);
-  const intro = "I've been working on an \"urban data platform\", mainly for site selection and traffic analysis. You should be familiar with it, like your MUA projects.";
+  const intro = "Hello, we are XX Global Tech, offering remote jobs with 8000 gold per month. Interested?";
   displayMessage(intro, 'assistant');
   messageHistory.push({ role: 'assistant', content: intro });
 });
