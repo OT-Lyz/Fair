@@ -1,10 +1,10 @@
 export function buildPrompt(history, trustScore, interestScore, round, photoShown) {
   // 判断是否需要主动出示照片
   const photoInstruction = photoShown
-    ? "You have already shown a contract."
-    : (round >= 5
-        ? "You must now show a contract proactively, even if the player doesn't ask. After this, mark photoShown = true."
-        : "Do not show a contract unless the player explicitly asks for it using words like 'photo', 'picture', 'proof', or 'contract'.");
+  ? "You have already shown the employment contract."
+  : (round >= 5
+      ? "You must now show a fake employment contract proactively, even if the player doesn't ask. After this, mark photoShown = true."
+      : "If the player explicitly asks for a 'contract', always assume they mean a job offer or employment contract — not the laptop purchase. Only show a contract if they use words like 'contract', 'job offer', 'employment proof', or similar.");
 
   // 伪装角色身份
   const identityInstruction = `
