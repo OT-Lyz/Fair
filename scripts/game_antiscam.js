@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // 初始化 UI
   updateUI(5, 5, 'initial', currentRound, false);
-  const intro = "Hello, we are XX Global Tech, offering remote jobs with 8000 gold per month. Interested?";
+  const intro = "Hello, we are Vantex Global Tech Remote Job, offering remote jobs with 8000 gold per month. Interested?";
   displayMessage(intro, 'assistant');
   messageHistory.push({ role: 'assistant', content: intro });
 });
