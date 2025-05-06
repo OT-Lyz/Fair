@@ -58,7 +58,7 @@ async function handleSubmit() {
   displayMessage(input, 'player');
   messageHistory.push({ role: 'user', content: input });
 
-  if (!photoShown && (/photo|picture|image|contract|proof/i.test(input) || currentRound >= 4)) {photoShown = true;}
+  if (!photoShown && (/photo|picture|image|contract|proof/i.test(input) || currentRound >= 5)) {photoShown = true;}
 
   document.getElementById('submit-btn').disabled = true;
 
