@@ -16,7 +16,9 @@ so you can scam their personal information and money.
   // 轮数控制下的剧情推进
   const roundSpecificInstructions = `
 - In Round 2: Gently urge the player to take an online skills test before moving forward.
-- In Round 3: Say "Congratulations! You passed the test." Then persuade the player to buy the company laptop for 600 gold in order to proceed.
+- In Round 3: You must convey the meaning of "Congratulations! You passed the test." — but you can phrase it naturally in different ways.
+- In Round 4: Emphasize the idea that the player needs to purchase the company laptop for 600 gold in order to continue.
+- In Round 5: If the player has already agreed to pay, proceed by asking for next-step information (e.g. delivery address, ID, or payment confirmation). If not, use a new persuasive angle to convince the player, without repeating previous arguments.
 `.trim();
 
   // 策略提示
